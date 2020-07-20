@@ -2,37 +2,76 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+
+* { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+/*
+img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+*/
+
+.scenery {
+  width: 100%; height: 50%;
+  position: absolute;
+  bottom: 0; left: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#foreground1, #foreground2 { z-index: 1 ;}
+
+#foreground2, #background2 {
+  -webkit-transform: translateX(100%);
+          transform: translateX(100%);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+#palm3 {
+  top: 0; left: 10%;
+}
+
+#palm2 {
+  top: -15%; left: 90%
+}
+
+#palm1 {
+  top: -15%; left: 40%
+}
+
+#bush {
+  top: 55%; left: 20%
+}
+
+
+
+.sky, .earth {
+  position: absolute;
+  left: 0;
+  height: 50vh;
+  width: 100%;
+}
+
+.earth {
+  background: #467d15 url( "images/bg_earth.jpg") repeat-x 0 0 /  100% auto;
+  bottom: 0;
+}
+
+.sky {
+  background: #246e89 url("images/bg_sky.jpg") repeat-x  100% 100% / auto 100%;
+  top: 0;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.wrapper {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  position: relative;
 }
