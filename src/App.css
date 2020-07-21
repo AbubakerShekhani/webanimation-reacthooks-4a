@@ -22,26 +22,25 @@ img {
   bottom: 0; left: 0;
 }
 
-#foreground1, #foreground2 { z-index: 1 ;}
+.foreground1, .foreground2 { z-index: 1 ;}
 
-#foreground2, #background2 {
+.foreground2, .background2 {
   -webkit-transform: translateX(100%);
           transform: translateX(100%);
 }
 
-#palm3 {
+.palm3 {
   top: 0; left: 10%;
 }
 
-#palm2 {
+.palm2 {
   top: -15%; left: 90%
 }
-
-#palm1 {
+.palm1 {
   top: -15%; left: 40%
 }
 
-#bush {
+.bush {
   top: 55%; left: 20%
 }
 

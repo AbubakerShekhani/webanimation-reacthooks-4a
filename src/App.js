@@ -25,11 +25,60 @@ const characterStyle = {
 
 const App = () => {
 
-
   const [currentState, setCurrentState] = useState(sonicAtRest);
 
   const sonicContainerRef = useRef();
   const foregroundContainerRef = useRef();
+  const backgrounContainerRef  = useRef();
+
+  const foregroundContainer = useWebAnimations({
+    keyframes: {
+      transform: ["translateX(-100%)"],
+    },
+    timing: {
+      delay:1000,
+      duration: 2000,
+
+      autoPlay: false,
+      playbackRate: 1,
+      direction: "reverse",
+
+    },
+    ref: foregroundContainerRef,
+
+  });
+
+  const backgroundContainer = useWebAnimations({
+    keyframes: {
+      transform: ["translateX(-120%)"],
+    },
+
+    timing: {
+      delay:1000,
+      duration: 5000,
+
+      playbackRate: 1,
+      autoPlay: false,
+      direction: "reverse",
+
+    },
+    ref: backgrounContainerRef,
+
+  });
+
+  const sonicContainer = useWebAnimations({
+    keyframes: {
+      transform: ["translateX(0%)", "translateX(0%)"],
+
+    },
+    ref: sonicContainerRef,
+    timing: {
+      easing: 'steps(11, end)',
+      duration: 800,
+      playbackRate: 1,
+      iterations: Infinity
+    }
+  });
 
   const sonicCharacter = useWebAnimations({
 
@@ -39,16 +88,14 @@ const App = () => {
 
     timing: {
       delay:0,
-      duration: 5000,
+      duration: 2000,
       iterations: Infinity,
-      playbackRate: 1,
-      autoPlay: false,
-      direction: "normal",
+      direction: "reverse",
       easing: "steps(1,end)",
     }
   });
 
-  const adjustBackgroundAnimation = () => {
+  const adjustBackgroundPlayback = (sceneries) => {
     if (sonicCharacter.getAnimation().playbackRate < .8) {
       sceneries.forEach(function(anim) {
         anim.playbackRate = sonicCharacter.getAnimation().playbackRate/2 * -1;
@@ -65,8 +112,46 @@ const App = () => {
   }
 
 
+
   const runSonic = () => {
     const sonicCharacterAnimation = sonicCharacter.getAnimation();
+
+
+
+
+    foregroundContainer.animate({
+      keyframes: {
+        transform: ["translateX(-150%)"],
+      },
+      ref: foregroundContainerRef,
+      timing: {
+        duration: 500,
+        iterations: Infinity,
+
+      },
+
+    })
+
+    backgroundContainer.animate({
+      keyframes: {
+        transform: ["translateX(-180%)"],
+      },
+      ref: backgrounContainerRef,
+      timing: {
+        duration: 1000,
+        iterations: Infinity,
+
+      },
+
+    })
+
+    console.log("Foreground");
+    let foreground1Movement = foregroundContainer.getAnimation();
+    let background1Movement = backgroundContainer.getAnimation();
+
+    let sceneries = [foreground1Movement, background1Movement];
+
+    console.log(sceneries);
 
 
     if (sonicCharacterAnimation.playState === 'running' && sonicCharacterAnimation.playbackRate === 1)
@@ -149,6 +234,8 @@ const App = () => {
 
     console.log(sonicCharacter.getAnimation().playbackRate);
 
+    adjustBackgroundPlayback(sceneries);
+
 
 
 
@@ -158,25 +245,9 @@ const App = () => {
   }
 
 
-  useLayoutEffect(() => {
-
-  });
 
 
 
-  const sonicContainer = useWebAnimations({
-    keyframes: {
-      transform: ["translateX(0%)", "translateX(0%)"],
-
-    },
-    ref: sonicContainerRef,
-    timing: {
-      easing: 'steps(11, end)',
-      duration: 800,
-      playbackRate: 1,
-      iterations: Infinity
-    }
-  });
 
 
   return (
@@ -195,20 +266,16 @@ const App = () => {
       <div>
         <button style={{position: 'absolute', right:'15%', top:'15%'}} onClick={runSonic} >Run</button>
       </div>
-      <div className="scenery" ref={foregroundContainerRef}>
+      <div className="scenery foreground1" ref={foregroundContainer.ref}>
+        <img className="palm1" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png"  alt=" " />
+        <img className="palm3" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png"  alt=" " />
+      </div>
+      <div className="scenery background1" ref={backgroundContainer.ref}>
+
+        <img className="palm3" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png" alt=" " />
+        <img className="palm2" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm2_small.png" alt=" " />
       </div>
 
-      <div className="scenery" id="background1">
-
-        <img id="palm1" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png" alt=" " />
-        <img id="palm3" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png" alt=" " />
-
-      </div>
-      <div className="scenery" id="background2">
-
-        <img id="palm3" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png" alt=" " />
-        <img id="palm2" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm2_small.png"  alt=" " />
-      </div>
 
     </div>
   );
