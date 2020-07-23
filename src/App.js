@@ -1,282 +1,100 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import './App.css';
 import useWebAnimations from "@wellyshen/use-web-animations";
-import sonicAtRest from './images/sonic-at-rest.png';
-import sonicrunning from './images/my-sonic-running.png';
-import sonicfast from './images/sonic-fast.png';
-import sonicfastest from './images/my-sonic-fastest.png';
-
-const containerStyle = {
-  position: 'absolute',
-  top: '0',
-  left: '50%',
-  overflow: 'hidden',
-  width: '120px',
-  maxWidth: '180px',
-  height: '177px',
-  zIndex: '1',
-}
-
-const characterStyle = {
- /* position: 'absolute',*/
-
-}
-
+import aliceSprite from './images/sprite_running-alice-queen_small.png';
+import palm3 from './images/palm3_small.png';
+import palm1 from './images/palm1_small.png';
+import palm2 from './images/palm2_small.png';
+import rknight from './images/r_knight_small.png';
+import rpawn from './images/r_pawn_small.png';
+import pawnupright from './images/r_pawn_upright_small.png';
+import urook from './images/w_rook_small.png';
+import urookupright from './images/w_rook_upright_small.png';
+import bushSmall from './images/bush_small.png';
 
 const App = () => {
 
-  const [currentState, setCurrentState] = useState(sonicAtRest);
+  let sceneryFrames = [
+    { transform: 'translateX(100%)' },
+    { transform: 'translateX(-100%)' }
+  ];
 
-  const sonicContainerRef = useRef();
-  const foregroundContainerRef = useRef();
-  const backgrounContainerRef  = useRef();
+  let aliceSpriteFrames = [
+    { transform: 'translateY(0)' },
+    { transform: 'translateY(-100%)' }
+  ];
 
-  const foregroundContainer = useWebAnimations({
-    keyframes: {
-      transform: ["translateX(-100%)"],
-    },
+
+  let redQueenAlice = useWebAnimations({
+    keyframes: aliceSpriteFrames,
     timing: {
-      delay:1000,
-      duration: 2000,
-
-      autoPlay: false,
-      playbackRate: 1,
+      easing: 'steps(7, end)',
       direction: "reverse",
-
-    },
-    ref: foregroundContainerRef,
-
-  });
-
-  const backgroundContainer = useWebAnimations({
-    keyframes: {
-      transform: ["translateX(-120%)"],
-    },
-
-    timing: {
-      delay:1000,
-      duration: 5000,
-
-      playbackRate: 1,
-      autoPlay: false,
-      direction: "reverse",
-
-    },
-    ref: backgrounContainerRef,
-
-  });
-
-  const sonicContainer = useWebAnimations({
-    keyframes: {
-      transform: ["translateX(0%)", "translateX(0%)"],
-
-    },
-    ref: sonicContainerRef,
-    timing: {
-      easing: 'steps(11, end)',
-      duration: 800,
+      duration: 600,
       playbackRate: 1,
       iterations: Infinity
     }
   });
 
-  const sonicCharacter = useWebAnimations({
 
-    keyframes: {
-      transform: ["translateX(-100%)"],
-    },
+  let sceneryTimingBackground = {
+    duration: 36000,
+    iterations: Infinity
+  };
 
-    timing: {
-      delay:0,
-      duration: 2000,
-      iterations: Infinity,
-      direction: "reverse",
-      easing: "steps(1,end)",
-    }
-  });
+  let sceneryTimingForeground = {
+      duration: 12000,
+      iterations: Infinity
+  };
 
-  const adjustBackgroundPlayback = (sceneries) => {
-    if (sonicCharacter.getAnimation().playbackRate < .8) {
-      sceneries.forEach(function(anim) {
-        anim.playbackRate = sonicCharacter.getAnimation().playbackRate/2 * -1;
-      });
-    } else if (sonicCharacter.getAnimation().playbackRate > 1.2) {
-      sceneries.forEach(function(anim) {
-        anim.playbackRate = sonicCharacter.getAnimation().playbackRate/2;
-      });
-    } else {
-      sceneries.forEach(function(anim) {
-        anim.playbackRate = 0;
-      });
-    }
-  }
+  const background1Movement = useWebAnimations({
+    keyframes: sceneryFrames,
+    timings: sceneryTimingBackground
+  })
 
+  const background2Movement = useWebAnimations({
+    keyframes: sceneryFrames,
+    timings: sceneryTimingBackground
+  })
 
+  const foreground1Movement = useWebAnimations({
+    keyframes: sceneryFrames,
+    timings: sceneryTimingForeground
+  })
 
-  const runSonic = () => {
-    const sonicCharacterAnimation = sonicCharacter.getAnimation();
-
-
-
-
-    foregroundContainer.animate({
-      keyframes: {
-        transform: ["translateX(-150%)"],
-      },
-      ref: foregroundContainerRef,
-      timing: {
-        duration: 500,
-        iterations: Infinity,
-
-      },
-
-    })
-
-    backgroundContainer.animate({
-      keyframes: {
-        transform: ["translateX(-180%)"],
-      },
-      ref: backgrounContainerRef,
-      timing: {
-        duration: 1000,
-        iterations: Infinity,
-
-      },
-
-    })
-
-    console.log("Foreground");
-    let foreground1Movement = foregroundContainer.getAnimation();
-    let background1Movement = backgroundContainer.getAnimation();
-
-    let sceneries = [foreground1Movement, background1Movement];
-
-    console.log(sceneries);
-
-
-    if (sonicCharacterAnimation.playState === 'running' && sonicCharacterAnimation.playbackRate === 1)
-    {
-      //Make it run faster
-      setCurrentState(sonicrunning);
-      sonicCharacterAnimation.cancel();
-
-      sonicCharacter.animate({
-        keyframes: {
-          transform: ["translateX(-100%)", "translateX(0%)"],
-        },
-        timing: {
-          delay: 0,
-          duration: 800,
-          iterations: Infinity,
-          direction: "reverse",
-          easing: "steps(11,start)",
-        }
-      })
-      sonicCharacterAnimation.play()
-
-    }
-
-    sonicCharacter.getAnimation().updatePlaybackRate(sonicCharacterAnimation.playbackRate * 1.2);
-
-    console.log(sonicCharacter.getAnimation().playbackRate);
-
-
-    if (sonicCharacterAnimation.playState === 'running' && sonicCharacterAnimation.playbackRate > 2)
-    {
-      //Make it run faster
-      setCurrentState(sonicfast);
-      sonicCharacterAnimation.cancel();
-
-      sonicCharacter.animate({
-        keyframes: {
-          transform: ["translateX(-100%)", "translateX(0%)"],
-        },
-        timing: {
-          delay: 0,
-          duration: 800,
-          iterations: Infinity,
-          direction: "reverse",
-          easing: "steps(4,start)",
-        }
-      })
-      sonicCharacterAnimation.play()
-
-    }
-
-    sonicCharacter.getAnimation().updatePlaybackRate(sonicCharacterAnimation.playbackRate * 1.2);
-
-    console.log(sonicCharacter.getAnimation().playbackRate);
-
-
-    if (sonicCharacterAnimation.playState === 'running' && sonicCharacterAnimation.playbackRate > 8)
-    {
-      //Make it run faster
-      setCurrentState(sonicfastest);
-      sonicCharacterAnimation.cancel();
-
-      sonicCharacter.animate({
-        keyframes: {
-          transform: ["translateX(-100%)", "translateX(0%)"],
-        },
-        timing: {
-          delay: 0,
-          duration: 500,
-          iterations: Infinity,
-          direction: "normal",
-          easing: "steps(9,end)",
-        }
-      })
-      sonicCharacterAnimation.play()
-
-    }
-
-    sonicCharacter.getAnimation().updatePlaybackRate(sonicCharacterAnimation.playbackRate * 1.2);
-
-    console.log(sonicCharacter.getAnimation().playbackRate);
-
-    adjustBackgroundPlayback(sceneries);
-
-
-
-
-
-
-
-  }
-
-
-
-
-
-
+  const foreground2Movement = useWebAnimations({
+    keyframes: sceneryFrames,
+    timings: sceneryTimingForeground
+  })
 
   return (
 
     <div className="wrapper">
       <div className="sky"></div>
       <div className="earth">
-        <div ref={sonicContainerRef} style={containerStyle}>
-          <img ref={sonicCharacter.ref} src={currentState} style={characterStyle} alt=" " />
+        <div id="red-queen_and_alice">
+          <img id="red-queen_and_alice_sprite" ref={redQueenAlice.ref} src={aliceSprite} alt="Alice and the Red Queen running to stay in place." />
         </div>
-
-
-
       </div>
 
-      <div>
-        <button style={{position: 'absolute', right:'15%', top:'15%'}} onClick={runSonic} >Run</button>
+      <div className="scenery" id="foreground1" ref={foreground1Movement.ref}>
+        <img id="palm3" src={palm3}  alt=" " />
       </div>
-      <div className="scenery foreground1" ref={foregroundContainer.ref}>
-        <img className="palm1" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png"  alt=" " />
-        <img className="palm3" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png"  alt=" " />
+      <div className="scenery" id="foreground2" ref={foreground2Movement.ref}>
+        <img id="bush" src={bushSmall} alt=" " />
+        <img id="w_rook_upright" src={urookupright} alt=" " />
       </div>
-      <div className="scenery background1" ref={backgroundContainer.ref}>
-
-        <img className="palm3" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm1_small.png" alt=" " />
-        <img className="palm2" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/641/palm2_small.png" alt=" " />
+      <div className="scenery" id="background1" ref={background1Movement.ref}>
+        <img id="r_pawn_upright" src={pawnupright} alt=" " />
+        <img id="w_rook" src={urook} alt=" " />
+        <img id="palm1" src={palm1}  alt=" " />
       </div>
+      <div className="scenery" id="background2" ref={background2Movement.ref}>
+        <img id="r_pawn" src={rpawn}  alt=" " />
 
-
+        <img id="r_knight" src={rknight} alt=" " />
+        <img id="palm2" src={palm2} alt=" " />
+      </div>
     </div>
   );
 }
